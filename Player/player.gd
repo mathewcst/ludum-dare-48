@@ -3,12 +3,18 @@ extends KinematicBody2D
 # ---- INSTANCE VARS
 export var move_speed: int = 100
 export var jump_height: int = 350
+export var can_take_damage: bool = true
 
 
 # ---- NODES
 onready var sprite = $AnimatedSprite
 onready var animation_player = $AnimationPlayer
+onready var hit_animation = $HitAnimation
 onready var camera = $PlayerCamera
+
+onready var invencible_timer = $InvencibleTimer
+
+onready var label = $Label
 
 
 # ---- MEMBER VARS
@@ -21,6 +27,10 @@ var velocity = Vector2.ZERO
 var direction = 1
 var jump_amount = 2
 
+
+# ---- STATS
+var health = 4
+
 # ---- COYOTE JUMP
 var jump_pressed_remember = 0
 var jump_pressed_remember_timer = 0.2
@@ -30,6 +40,8 @@ var grounded_remember_timer = 0.2
 
 
 func _physics_process(delta: float) -> void:
+	
+	label.text = str(health)
 	
 	remember_grounded(delta)
 	remember_jump(delta)
@@ -97,6 +109,31 @@ func move(delta) -> Vector2:
 	return move_and_slide(velocity, UP)
 
 
+func damage_player(amount: int = 0, hit_position: Vector2 = Vector2.ZERO) -> void:
+	var knockback = 200
+	
+	if can_take_damage:
+		health -= amount
+		can_take_damage = false
+		
+		hit_animation.play("Start")
+		
+		# Get hit direction
+		if hit_position.x > position.x:
+			# move left
+			velocity.x -= knockback
+		elif hit_position.x < position.x:
+			# move right
+			velocity.x += knockback
+	
+		# Move pleyer up a little bit
+		velocity.y -= knockback
+			
+		invencible_timer.start()
+		
+
+
+# ---- HELPER FUNCTIONS
 func apply_gravity() -> void:
 	velocity.y += GRAVITY
 
@@ -146,3 +183,13 @@ func _on_RoomDetector_area_entered(area: Area2D) -> void:
 	camera.limit_bottom = camera.limit_top + size.y
 	camera.limit_right = camera.limit_left + size.x
 	
+
+
+func _on_HitBox_area_entered(area: Area2D) -> void:
+	if area.is_in_group("Hitbox"):
+		damage_player(1, area.global_position)
+
+
+func _on_InvencibleTimer_timeout() -> void:
+	hit_animation.play("Stop")
+	can_take_damage = true

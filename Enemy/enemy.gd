@@ -93,3 +93,4 @@ func _on_PatrorlTimer_timeout() -> void:
 
 func _on_IdleTimer_timeout() -> void:
 	patrol()
+

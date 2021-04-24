@@ -1,10 +1,16 @@
-[gd_scene load_steps=21 format=2]
+[gd_scene load_steps=26 format=2]
 
 [ext_resource path="res://Player/Sprites/Player_Idle_04.png" type="Texture" id=1]
 [ext_resource path="res://Player/player.gd" type="Script" id=2]
 [ext_resource path="res://Player/Sprites/Player_Walk_04.png" type="Texture" id=3]
 [ext_resource path="res://Player/Sprites/Player_Air_01.png" type="Texture" id=4]
 [ext_resource path="res://Player/Sprites/Player_Fall_01.png" type="Texture" id=5]
+[ext_resource path="res://Systems/hitbox.tscn" type="PackedScene" id=6]
+[ext_resource path="res://hit_flash.shader" type="Shader" id=7]
+
+[sub_resource type="ShaderMaterial" id=24]
+shader = ExtResource( 7 )
+shader_param/active = false
 
 [sub_resource type="AtlasTexture" id=9]
 atlas = ExtResource( 1 )
@@ -224,10 +230,44 @@ tracks/2/keys = {
 }
 
 [sub_resource type="RectangleShape2D" id=1]
-extents = Vector2( 6.10709, 7.47511 )
+extents = Vector2( 5.88835, 7.41007 )
 
 [sub_resource type="RectangleShape2D" id=2]
-extents = Vector2( 8.18756, 9.03195 )
+extents = Vector2( 7.28198, 8.43522 )
+
+[sub_resource type="Animation" id=25]
+resource_name = "Start"
+length = 0.2
+loop = true
+tracks/0/type = "value"
+tracks/0/path = NodePath("AnimatedSprite:material:shader_param/active")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.1 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 1,
+"values": [ true, false ]
+}
+
+[sub_resource type="Animation" id=26]
+resource_name = "Stop"
+length = 0.2
+loop = true
+tracks/0/type = "value"
+tracks/0/path = NodePath("AnimatedSprite:material:shader_param/active")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 1,
+"values": [ false ]
+}
 
 [node name="Player" type="KinematicBody2D"]
 collision_mask = 6
@@ -237,9 +277,10 @@ __meta__ = {
 }
 
 [node name="AnimatedSprite" type="AnimatedSprite" parent="."]
-scale = Vector2( 0.925, 1.075 )
+material = SubResource( 24 )
+scale = Vector2( 1.05, 0.95 )
 frames = SubResource( 7 )
-animation = "Fall"
+animation = "Air"
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 autoplay = "Idle"
@@ -249,7 +290,8 @@ anims/Idle = SubResource( 8 )
 anims/Walk = SubResource( 17 )
 
 [node name="Collision" type="CollisionShape2D" parent="."]
-position = Vector2( -0.92395, 0.53093 )
+visible = false
+position = Vector2( -0.824627, 1.12688 )
 shape = SubResource( 1 )
 
 [node name="PlayerCamera" type="Camera2D" parent="."]
@@ -270,6 +312,29 @@ editor_draw_screen = false
 [node name="RoomDetector" type="Area2D" parent="."]
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="RoomDetector"]
+visible = false
 shape = SubResource( 2 )
 
+[node name="HitBox" parent="." instance=ExtResource( 6 )]
+visible = false
+
+[node name="Label" type="Label" parent="."]
+margin_left = -4.63515
+margin_top = -21.0568
+margin_right = 35.3649
+margin_bottom = -7.05683
+text = "1"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="HitAnimation" type="AnimationPlayer" parent="."]
+anims/Start = SubResource( 25 )
+anims/Stop = SubResource( 26 )
+
+[node name="InvencibleTimer" type="Timer" parent="."]
+one_shot = true
+
 [connection signal="area_entered" from="RoomDetector" to="." method="_on_RoomDetector_area_entered"]
+[connection signal="area_entered" from="HitBox" to="." method="_on_HitBox_area_entered"]
+[connection signal="timeout" from="InvencibleTimer" to="." method="_on_InvencibleTimer_timeout"]
