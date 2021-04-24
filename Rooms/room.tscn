@@ -1,7 +1,7 @@
 [gd_scene load_steps=2 format=2]
 
 [sub_resource type="RectangleShape2D" id=1]
-extents = Vector2( 112.133, 178.909 )
+extents = Vector2( 142.469, 67.4645 )
 
 [node name="Room" type="Node2D"]
 __meta__ = {
