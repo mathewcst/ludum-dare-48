@@ -7,7 +7,7 @@ onready var patrol_timer = $PatrolTimer
 onready var edge_cast = $EdgeCast
 onready var wall_cast = $WallCast
 
-onready var sprite = $Sprite
+onready var sprite = $AnimatedSprite
 
 
 # ---- INSTANCE VARS
@@ -46,26 +46,45 @@ func _physics_process(delta: float) -> void:
 	velocity = move_and_slide(velocity, UP)
 
 func patrol() -> void:
+	sprite.play("Walk")
 	patrol_timer.start()
 	patrolling = true
 
 
 func idle() -> void:
+	sprite.play("Idle")
 	patrolling = false
 	idle_timer.start()
-	change_direction()
+	
+	randomize()
+	var chance = rand_range(-1, 1)
+	
+	if chance > 0:
+		chance = 1
+	elif chance < 0:
+		chance = -1
+		
+	change_direction(chance)
 	
 
-func change_direction() -> void:
-	direction *= -1
-	edge_cast.position.x *= -1
-	wall_cast.position.x *= -1
-	sprite.flip_h = !sprite.flip_h
+func change_direction(new_direction: int = 0) -> void:
+	var previous_direction = direction
 	
-	if direction > 0:
-		wall_cast.rotation_degrees = 0
-	elif direction < 0:
-		wall_cast.rotation_degrees = 180
+	if new_direction != 0:
+		direction *= new_direction
+	else:
+		direction *= -1
+	
+	# If direction change, flip colliders and sprite
+	if previous_direction != direction:
+		edge_cast.position.x *= -1
+		wall_cast.position.x *= -1
+		sprite.flip_h = !sprite.flip_h
+		
+		if direction > 0:
+			wall_cast.rotation_degrees = 0
+		elif direction < 0:
+			wall_cast.rotation_degrees = 180
 
 # ---- SIGNALS
 func _on_PatrorlTimer_timeout() -> void:

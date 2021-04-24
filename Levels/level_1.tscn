@@ -122,6 +122,12 @@ position = Vector2( 512.191, -24.5453 )
 [node name="Player" parent="." instance=ExtResource( 11 )]
 position = Vector2( 62.1859, -24.796 )
 
+[node name="Enemy" parent="." instance=ExtResource( 4 )]
+position = Vector2( 213.314, -24.5299 )
+
+[node name="Enemy2" parent="." instance=ExtResource( 4 )]
+position = Vector2( 269.043, -24.0294 )
+
 [editable path="Room"]
 [editable path="Room2"]
 [editable path="Room3"]
