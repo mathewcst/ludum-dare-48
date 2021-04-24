@@ -7,6 +7,7 @@ export var jump_height: int = 350
 
 # ---- NODES
 onready var sprite = $Sprite
+onready var camera = $PlayerCamera
 
 
 # ---- MEMBER VARS
@@ -45,9 +46,9 @@ func _physics_process(delta: float) -> void:
 	animations()
 
 
-func _unhandled_input(event: InputEvent) -> void:
+func _unhandled_input(_event: InputEvent) -> void:
 	if Input.is_action_just_pressed("reset"):
-		get_tree().reload_current_scene()
+		var _reload = get_tree().reload_current_scene()
 		
 	if Input.is_action_just_pressed("jump"):
 		if not is_on_floor() and jump_amount > 0:
@@ -113,3 +114,23 @@ func animations() -> void:
 		sprite.flip_h = false
 	elif direction < 0:
 		sprite.flip_h = true
+
+
+func _on_RoomDetector_area_entered(area: Area2D) -> void:
+	var collision_shape = area.get_node('CollisionShape2D')
+	var size = collision_shape.shape.extents * 2
+	
+	var view_size = get_viewport_rect().size
+	
+	if size.y < view_size.y:
+		size.y = view_size.y
+		
+	if size.x < view_size.x:
+		size.x = view_size.x
+	
+	camera.limit_top = collision_shape.global_position.y - size.y / 2
+	camera.limit_left = collision_shape.global_position.x - size.x / 2
+	
+	camera.limit_bottom = camera.limit_top + size.y
+	camera.limit_right = camera.limit_left + size.x
+	
