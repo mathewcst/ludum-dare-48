@@ -6,7 +6,8 @@ export var jump_height: int = 350
 
 
 # ---- NODES
-onready var sprite = $Sprite
+onready var sprite = $AnimatedSprite
+onready var animation_player = $AnimationPlayer
 onready var camera = $PlayerCamera
 
 
@@ -74,6 +75,7 @@ func move(delta) -> Vector2:
 	var input_vector = _get_inputs()
 	
 	if input_vector != Vector2.ZERO:
+		animation_player.play("Walk")
 		velocity = velocity.move_toward(input_vector * move_speed, ACCELARTION * delta)
 		
 		if input_vector.x > 0:
@@ -83,6 +85,14 @@ func move(delta) -> Vector2:
 		
 	else:
 		velocity = velocity.move_toward(Vector2.ZERO, FRICTION * delta)
+		animation_player.play("Idle")
+		
+	if not is_on_floor():
+		if velocity.y < 0:
+			animation_player.play("Air")
+		elif velocity.y > 0:
+			animation_player.play("Fall")
+		
 	
 	return move_and_slide(velocity, UP)
 
@@ -115,6 +125,8 @@ func animations() -> void:
 	elif direction < 0:
 		sprite.flip_h = true
 
+
+# ---- SIGNALS
 
 func _on_RoomDetector_area_entered(area: Area2D) -> void:
 	var collision_shape = area.get_node('CollisionShape2D')
