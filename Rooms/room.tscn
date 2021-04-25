@@ -8,7 +8,9 @@ __meta__ = {
 "_edit_group_": true
 }
 
-[node name="RoomArea" type="Area2D" parent="."]
+[node name="RoomArea" type="Area2D" parent="." groups=[
+"Room",
+]]
 monitoring = false
 collision_layer = 4
 

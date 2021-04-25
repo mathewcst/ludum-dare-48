@@ -12,11 +12,14 @@ onready var sprite = $AnimatedSprite
 
 # ---- INSTANCE VARS
 export var move_speed: int = 40
+export var chase_speed: int = 60
+export var health:int = 4
 
 
 # ---- MEMBER VARS
 const ACCELERATION = 450
 const FRICTION = 450
+const GRAVITY = 120
 const UP = Vector2(0, -1)
 
 var direction = 1
@@ -24,6 +27,8 @@ var velocity = Vector2.ZERO
 var input_vector = Vector2(0,0)
 
 var patrolling: bool = false
+var chasing: bool = false
+var chase_body: KinematicBody2D = null
 
 
 func _ready() -> void:
@@ -33,12 +38,25 @@ func _ready() -> void:
 func _physics_process(delta: float) -> void:
 	input_vector.x = direction
 	
+	if health <= 0:
+		die()
+	
 	if patrolling:
 		
 		if not edge_cast.is_colliding() or wall_cast.is_colliding():
 			change_direction()
 			
 		velocity = velocity.move_toward(input_vector * move_speed, ACCELERATION * delta)
+		
+	elif chasing:
+		if not edge_cast.is_colliding() or wall_cast.is_colliding():
+			idle()
+		
+		var chase_direction = position.direction_to(chase_body.position)
+		chase(chase_direction.x)
+		
+		velocity = velocity.move_toward(Vector2(chase_direction.x, 0) * chase_speed, ACCELERATION * delta)
+		
 		
 	else:
 		velocity = velocity.move_toward(Vector2.ZERO, FRICTION * delta)
@@ -47,6 +65,7 @@ func _physics_process(delta: float) -> void:
 
 func patrol() -> void:
 	sprite.play("Walk")
+	idle_timer.stop()
 	patrol_timer.start()
 	patrolling = true
 
@@ -54,7 +73,9 @@ func patrol() -> void:
 func idle() -> void:
 	sprite.play("Idle")
 	patrolling = false
+	patrol_timer.stop()
 	idle_timer.start()
+	velocity.x = 0
 	
 	randomize()
 	var chance = rand_range(-1, 1)
@@ -67,14 +88,28 @@ func idle() -> void:
 	change_direction(chance)
 	
 
+func chase(_direction: float) -> void:
+	
+	if _direction > 0:
+		_direction = 1
+	elif _direction < 0:
+		_direction = -1
+	
+	
+	patrol_timer.stop()
+	idle_timer.stop()
+	change_direction(_direction)
+
+	
+
 func change_direction(new_direction: int = 0) -> void:
 	var previous_direction = direction
 	
 	if new_direction != 0:
-		direction *= new_direction
+		direction = new_direction
 	else:
 		direction *= -1
-	
+		
 	# If direction change, flip colliders and sprite
 	if previous_direction != direction:
 		edge_cast.position.x *= -1
@@ -86,6 +121,27 @@ func change_direction(new_direction: int = 0) -> void:
 		elif direction < 0:
 			wall_cast.rotation_degrees = 180
 
+
+func take_damage(amount: int) -> void:
+	health -= amount
+
+
+func die() -> void:
+	queue_free()
+	
+
+func chase_player(player: KinematicBody2D) -> void:
+	chasing = true
+	chase_body = player
+
+
+func stop_chasing() -> void:
+	velocity.x = 0
+	chasing = false
+	chase_body = null
+	idle()
+
+
 # ---- SIGNALS
 func _on_PatrorlTimer_timeout() -> void:
 	idle()
@@ -94,3 +150,11 @@ func _on_PatrorlTimer_timeout() -> void:
 func _on_IdleTimer_timeout() -> void:
 	patrol()
 
+
+
+func _on_LineOfSight_body_entered(body: Node) -> void:
+	chase_player(body)
+
+
+func _on_LineOfSight_body_exited(body: Node) -> void:
+	stop_chasing()

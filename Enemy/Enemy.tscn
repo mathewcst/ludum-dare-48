@@ -1,4 +1,4 @@
-[gd_scene load_steps=16 format=2]
+[gd_scene load_steps=17 format=2]
 
 [ext_resource path="res://Enemy/Sprites/Enemy_Walk_04.png" type="Texture" id=1]
 [ext_resource path="res://Enemy/enemy.gd" type="Script" id=2]
@@ -57,9 +57,14 @@ extents = Vector2( 6.41309, 7.6875 )
 radius = 8.01109
 height = 4.15446
 
-[node name="Enemy" type="KinematicBody2D"]
+[sub_resource type="CircleShape2D" id=13]
+radius = 49.3494
+
+[node name="Enemy" type="KinematicBody2D" groups=[
+"Enemy",
+]]
 collision_layer = 8
-collision_mask = 0
+collision_mask = 2
 script = ExtResource( 2 )
 __meta__ = {
 "_edit_group_": true
@@ -99,7 +104,15 @@ collision_mask = 2
 [node name="CollisionShape2D" parent="HitBox" index="0"]
 shape = SubResource( 12 )
 
+[node name="LineOfSight" type="Area2D" parent="."]
+collision_layer = 8
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="LineOfSight"]
+shape = SubResource( 13 )
+
 [connection signal="timeout" from="PatrolTimer" to="." method="_on_PatrorlTimer_timeout"]
 [connection signal="timeout" from="IdleTimer" to="." method="_on_IdleTimer_timeout"]
+[connection signal="body_entered" from="LineOfSight" to="." method="_on_LineOfSight_body_entered"]
+[connection signal="body_exited" from="LineOfSight" to="." method="_on_LineOfSight_body_exited"]
 
 [editable path="HitBox"]

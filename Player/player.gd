@@ -4,10 +4,13 @@ extends KinematicBody2D
 export var move_speed: int = 100
 export var jump_height: int = 350
 export var can_take_damage: bool = true
+export var projectile: PackedScene
 
 
 # ---- NODES
 onready var sprite = $AnimatedSprite
+onready var gun = $Gun
+onready var muzzle = $Muzzle
 onready var animation_player = $AnimationPlayer
 onready var hit_animation = $HitAnimation
 onready var camera = $PlayerCamera
@@ -38,13 +41,20 @@ var jump_pressed_remember_timer = 0.2
 var grounded_remember = 0
 var grounded_remember_timer = 0.2
 
+# ---- SHOOT
+var bullets = 10
+var max_bullets = 10
+var shoot_pressed_remember = 0
+var shoot_pressed_remember_timer = 0.2
+
 
 func _physics_process(delta: float) -> void:
 	
-	label.text = str(health)
+	label.text = str(bullets)
 	
 	remember_grounded(delta)
 	remember_jump(delta)
+	remember_shoot(delta)
 	
 	if can_player_jump():
 		grounded_remember = 0
@@ -69,6 +79,9 @@ func _unhandled_input(_event: InputEvent) -> void:
 			jump_pressed_remember = 0
 			velocity.y -= jump_height
 			jump_amount -= 1
+			
+	if Input.is_action_just_pressed("fire"):
+		shoot()
 	
 
 
@@ -112,6 +125,9 @@ func move(delta) -> Vector2:
 func damage_player(amount: int = 0, hit_position: Vector2 = Vector2.ZERO) -> void:
 	var knockback = 200
 	
+	if health <= 0:
+		die()
+	
 	if can_take_damage:
 		health -= amount
 		can_take_damage = false
@@ -130,7 +146,22 @@ func damage_player(amount: int = 0, hit_position: Vector2 = Vector2.ZERO) -> voi
 		velocity.y -= knockback
 			
 		invencible_timer.start()
-		
+
+
+func shoot() -> void:
+	if shoot_pressed_remember < 0 and bullets > 0:
+		bullets -= 1
+		var bullet = projectile.instance()
+		owner.add_child(bullet)
+		bullet.switch_direction(direction)
+		bullet.position = muzzle.global_position
+		bullet.set_spawn_position(muzzle.global_position)
+
+
+func die() -> void:
+	hit_animation.play("Stop")
+	queue_free()
+	get_tree().reload_current_scene()
 
 
 # ---- HELPER FUNCTIONS
@@ -156,32 +187,45 @@ func remember_jump(delta) -> void:
 		jump_pressed_remember = jump_pressed_remember_timer
 
 
+func remember_shoot(delta) -> void:
+	shoot_pressed_remember -= delta
+	
+	if Input.is_action_just_pressed("fire") and shoot_pressed_remember < 0:
+		shoot_pressed_remember = shoot_pressed_remember_timer
+
+
+	
 func animations() -> void:
 	if direction > 0:
 		sprite.flip_h = false
+		gun.position.x = 8
+		muzzle.position.x = 12
 	elif direction < 0:
 		sprite.flip_h = true
+		gun.position.x = -8
+		muzzle.position.x = -12
 
 
 # ---- SIGNALS
 
 func _on_RoomDetector_area_entered(area: Area2D) -> void:
-	var collision_shape = area.get_node('CollisionShape2D')
-	var size = collision_shape.shape.extents * 2
-	
-	var view_size = get_viewport_rect().size
-	
-	if size.y < view_size.y:
-		size.y = view_size.y
+	if area.is_in_group("Room"):
+		var collision_shape = area.get_node('CollisionShape2D')
+		var size = collision_shape.shape.extents * 2
 		
-	if size.x < view_size.x:
-		size.x = view_size.x
-	
-	camera.limit_top = collision_shape.global_position.y - size.y / 2
-	camera.limit_left = collision_shape.global_position.x - size.x / 2
-	
-	camera.limit_bottom = camera.limit_top + size.y
-	camera.limit_right = camera.limit_left + size.x
+		var view_size = get_viewport_rect().size
+		
+		if size.y < view_size.y:
+			size.y = view_size.y
+			
+		if size.x < view_size.x:
+			size.x = view_size.x
+		
+		camera.limit_top = collision_shape.global_position.y - size.y / 2
+		camera.limit_left = collision_shape.global_position.x - size.x / 2
+		
+		camera.limit_bottom = camera.limit_top + size.y
+		camera.limit_right = camera.limit_left + size.x
 	
 
 
@@ -193,3 +237,8 @@ func _on_HitBox_area_entered(area: Area2D) -> void:
 func _on_InvencibleTimer_timeout() -> void:
 	hit_animation.play("Stop")
 	can_take_damage = true
+
+
+func _on_BulletReplenishTimer_timeout() -> void:
+	if bullets < max_bullets:
+		bullets += 1
