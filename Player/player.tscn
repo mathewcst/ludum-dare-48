@@ -10,50 +10,50 @@
 [ext_resource path="res://Player/Sprites/Gun.png" type="Texture" id=8]
 [ext_resource path="res://Player/projectile.tscn" type="PackedScene" id=9]
 
-[sub_resource type="ShaderMaterial" id=24]
+[sub_resource type="ShaderMaterial" id=1]
 shader = ExtResource( 7 )
 shader_param/active = false
 
+[sub_resource type="AtlasTexture" id=2]
+atlas = ExtResource( 1 )
+region = Rect2( 0, 0, 16, 16 )
+
+[sub_resource type="AtlasTexture" id=3]
+atlas = ExtResource( 1 )
+region = Rect2( 16, 0, 16, 16 )
+
+[sub_resource type="AtlasTexture" id=4]
+atlas = ExtResource( 1 )
+region = Rect2( 32, 0, 16, 16 )
+
+[sub_resource type="AtlasTexture" id=5]
+atlas = ExtResource( 1 )
+region = Rect2( 48, 0, 16, 16 )
+
+[sub_resource type="AtlasTexture" id=6]
+atlas = ExtResource( 3 )
+region = Rect2( 0, 0, 16, 16 )
+
+[sub_resource type="AtlasTexture" id=7]
+atlas = ExtResource( 3 )
+region = Rect2( 16, 0, 16, 16 )
+
+[sub_resource type="AtlasTexture" id=8]
+atlas = ExtResource( 3 )
+region = Rect2( 32, 0, 16, 16 )
+
 [sub_resource type="AtlasTexture" id=9]
-atlas = ExtResource( 1 )
-region = Rect2( 0, 0, 16, 16 )
-
-[sub_resource type="AtlasTexture" id=10]
-atlas = ExtResource( 1 )
-region = Rect2( 16, 0, 16, 16 )
-
-[sub_resource type="AtlasTexture" id=11]
-atlas = ExtResource( 1 )
-region = Rect2( 32, 0, 16, 16 )
-
-[sub_resource type="AtlasTexture" id=12]
-atlas = ExtResource( 1 )
-region = Rect2( 48, 0, 16, 16 )
-
-[sub_resource type="AtlasTexture" id=18]
-atlas = ExtResource( 3 )
-region = Rect2( 0, 0, 16, 16 )
-
-[sub_resource type="AtlasTexture" id=19]
-atlas = ExtResource( 3 )
-region = Rect2( 16, 0, 16, 16 )
-
-[sub_resource type="AtlasTexture" id=20]
-atlas = ExtResource( 3 )
-region = Rect2( 32, 0, 16, 16 )
-
-[sub_resource type="AtlasTexture" id=21]
 atlas = ExtResource( 3 )
 region = Rect2( 48, 0, 16, 16 )
 
-[sub_resource type="SpriteFrames" id=7]
+[sub_resource type="SpriteFrames" id=10]
 animations = [ {
-"frames": [ SubResource( 9 ), SubResource( 10 ), SubResource( 11 ), SubResource( 12 ) ],
+"frames": [ SubResource( 2 ), SubResource( 3 ), SubResource( 4 ), SubResource( 5 ) ],
 "loop": true,
 "name": "Idle",
 "speed": 8.0
 }, {
-"frames": [ SubResource( 18 ), SubResource( 19 ), SubResource( 20 ), SubResource( 21 ) ],
+"frames": [ SubResource( 6 ), SubResource( 7 ), SubResource( 8 ), SubResource( 9 ) ],
 "loop": true,
 "name": "Walk",
 "speed": 8.0
@@ -69,7 +69,7 @@ animations = [ {
 "speed": 5.0
 } ]
 
-[sub_resource type="Animation" id=22]
+[sub_resource type="Animation" id=11]
 resource_name = "Air"
 length = 0.2
 tracks/0/type = "value"
@@ -109,7 +109,7 @@ tracks/2/keys = {
 "values": [ Vector2( 1.1, 0.9 ), Vector2( 1, 1 ) ]
 }
 
-[sub_resource type="Animation" id=23]
+[sub_resource type="Animation" id=12]
 resource_name = "Fall"
 length = 0.4
 tracks/0/type = "value"
@@ -149,8 +149,7 @@ tracks/2/keys = {
 "values": [ Vector2( 0.9, 1.1 ), Vector2( 1, 1 ) ]
 }
 
-[sub_resource type="Animation" id=8]
-resource_name = "Idle"
+[sub_resource type="Animation" id=13]
 length = 0.4
 loop = true
 tracks/0/type = "value"
@@ -190,7 +189,7 @@ tracks/2/keys = {
 "values": [ Vector2( 1, 1 ) ]
 }
 
-[sub_resource type="Animation" id=17]
+[sub_resource type="Animation" id=14]
 resource_name = "Walk"
 length = 0.4
 loop = true
@@ -231,13 +230,13 @@ tracks/2/keys = {
 "values": [ Vector2( 1, 1 ) ]
 }
 
-[sub_resource type="RectangleShape2D" id=1]
+[sub_resource type="RectangleShape2D" id=15]
 extents = Vector2( 5.88835, 7.41007 )
 
-[sub_resource type="RectangleShape2D" id=2]
+[sub_resource type="RectangleShape2D" id=16]
 extents = Vector2( 7.28198, 8.43522 )
 
-[sub_resource type="Animation" id=25]
+[sub_resource type="Animation" id=17]
 resource_name = "Start"
 length = 0.2
 loop = true
@@ -254,7 +253,7 @@ tracks/0/keys = {
 "values": [ false, true ]
 }
 
-[sub_resource type="Animation" id=26]
+[sub_resource type="Animation" id=18]
 resource_name = "Stop"
 length = 0.2
 loop = true
@@ -283,16 +282,16 @@ __meta__ = {
 projectile = ExtResource( 9 )
 
 [node name="AnimatedSprite" type="AnimatedSprite" parent="."]
-material = SubResource( 24 )
-frames = SubResource( 7 )
+material = SubResource( 1 )
+frames = SubResource( 10 )
 animation = "Idle"
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 autoplay = "Idle"
-anims/Air = SubResource( 22 )
-anims/Fall = SubResource( 23 )
-anims/Idle = SubResource( 8 )
-anims/Walk = SubResource( 17 )
+anims/Air = SubResource( 11 )
+anims/Fall = SubResource( 12 )
+anims/Idle = SubResource( 13 )
+anims/Walk = SubResource( 14 )
 
 [node name="Muzzle" type="Position2D" parent="."]
 position = Vector2( 12, 3 )
@@ -309,7 +308,7 @@ texture = ExtResource( 8 )
 [node name="Collision" type="CollisionShape2D" parent="."]
 visible = false
 position = Vector2( -0.824627, 1.12688 )
-shape = SubResource( 1 )
+shape = SubResource( 15 )
 
 [node name="PlayerCamera" type="Camera2D" parent="."]
 current = true
@@ -330,7 +329,7 @@ editor_draw_screen = false
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="RoomDetector"]
 visible = false
-shape = SubResource( 2 )
+shape = SubResource( 16 )
 
 [node name="HitBox" parent="." instance=ExtResource( 6 )]
 visible = false
@@ -347,8 +346,8 @@ __meta__ = {
 
 [node name="HitAnimation" type="AnimationPlayer" parent="."]
 autoplay = "Stop"
-anims/Start = SubResource( 25 )
-anims/Stop = SubResource( 26 )
+anims/Start = SubResource( 17 )
+anims/Stop = SubResource( 18 )
 
 [node name="InvencibleTimer" type="Timer" parent="."]
 one_shot = true

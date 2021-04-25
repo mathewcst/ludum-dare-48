@@ -50,7 +50,7 @@ var shoot_pressed_remember_timer = 0.2
 
 func _physics_process(delta: float) -> void:
 	
-	label.text = str(bullets)
+	label.text = str(health)
 	
 	remember_grounded(delta)
 	remember_jump(delta)
@@ -161,7 +161,7 @@ func shoot() -> void:
 func die() -> void:
 	hit_animation.play("Stop")
 	queue_free()
-	get_tree().reload_current_scene()
+	var _reload = get_tree().reload_current_scene()
 
 
 # ---- HELPER FUNCTIONS

@@ -8,11 +8,26 @@
 
 config_version=4
 
+_global_script_classes=[ {
+"base": "StaticBody2D",
+"class": "Hazard",
+"language": "GDScript",
+"path": "res://Hazards/hazard_parent.gd"
+} ]
+_global_script_class_icons={
+"Hazard": ""
+}
+
 [application]
 
 config/name="LudumDare48"
 run/main_scene="res://Levels/level_1.tscn"
 config/icon="res://icon.png"
+
+[autoload]
+
+GameManager="*res://Managers/game_manager.gd"
+MusicController="*res://Managers/music_controller.tscn"
 
 [display]
 
@@ -85,6 +100,8 @@ fire={
 2d_physics/layer_3="Room"
 2d_physics/layer_4="Enemy"
 2d_physics/layer_5="Hitbox"
+2d_physics/layer_6="Transition"
+2d_physics/layer_7="Hazard"
 
 [physics]
 

@@ -1,0 +1,73 @@
+[gd_scene load_steps=9 format=2]
+
+[ext_resource path="res://Hazards/hazard_parent.tscn" type="PackedScene" id=1]
+[ext_resource path="res://Hazards/Sprites/rolling_spikes_base.png" type="Texture" id=2]
+[ext_resource path="res://Hazards/Sprites/rolling_spikes.png" type="Texture" id=3]
+[ext_resource path="res://Hazards/Sprites/rolling_spikes_support.png" type="Texture" id=4]
+[ext_resource path="res://Hazards/rotating_spikes.gd" type="Script" id=5]
+
+[sub_resource type="RectangleShape2D" id=4]
+extents = Vector2( 3.8744, 13.1055 )
+
+[sub_resource type="Animation" id=3]
+resource_name = "Movement"
+length = 2.0
+loop = true
+tracks/0/type = "value"
+tracks/0/path = NodePath("Sprite/Spikes:rotation_degrees")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 1, 2 ),
+"transitions": PoolRealArray( 1, 1, 1 ),
+"update": 0,
+"values": [ -360.0, 360.0, -360.0 ]
+}
+tracks/1/type = "value"
+tracks/1/path = NodePath("Sprite:rotation_degrees")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0, 1, 2 ),
+"transitions": PoolRealArray( 1, 1, 1 ),
+"update": 0,
+"values": [ -65.0, 65.0, -65.0 ]
+}
+
+[sub_resource type="CircleShape2D" id=2]
+radius = 17.3436
+
+[node name="RotatingSpikes" instance=ExtResource( 1 )]
+script = ExtResource( 5 )
+
+[node name="Support" type="Sprite" parent="." index="0"]
+texture = ExtResource( 4 )
+
+[node name="Sprite" parent="." index="1"]
+texture = ExtResource( 2 )
+centered = false
+offset = Vector2( -5, 0 )
+
+[node name="Spikes" type="Sprite" parent="Sprite" index="0"]
+position = Vector2( 0.240077, 25.9096 )
+texture = ExtResource( 3 )
+
+[node name="CollisionShape2D" parent="." index="2"]
+position = Vector2( 0.0883865, 11.1369 )
+shape = SubResource( 4 )
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="." index="3"]
+autoplay = "Movement"
+anims/Movement = SubResource( 3 )
+
+[node name="PlayerDettect" parent="." index="4"]
+position = Vector2( 7.88089, 6.11331 )
+rotation = 0.551201
+
+[node name="CollisionShape2D" parent="PlayerDettect" index="0"]
+position = Vector2( 3.7777, 20.5267 )
+shape = SubResource( 2 )

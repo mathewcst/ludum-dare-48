@@ -1,0 +1,114 @@
+[gd_scene load_steps=7 format=2]
+
+[ext_resource path="res://Levels/level_transition.gd" type="Script" id=1]
+[ext_resource path="res://scene_transition.shader" type="Shader" id=2]
+
+[sub_resource type="RectangleShape2D" id=1]
+extents = Vector2( 29.8013, 37.3585 )
+
+[sub_resource type="ShaderMaterial" id=2]
+shader = ExtResource( 2 )
+shader_param/progress = 0.0
+shader_param/transition_in = true
+shader_param/diamondPixelSize = 25.0
+
+[sub_resource type="Animation" id=3]
+resource_name = "In"
+tracks/0/type = "value"
+tracks/0/path = NodePath("ColorRect:material:shader_param/progress")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 1 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 0,
+"values": [ 0.0, 1.0 ]
+}
+tracks/1/type = "value"
+tracks/1/path = NodePath("ColorRect:material:shader_param/transition_in")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 1,
+"values": [ true ]
+}
+tracks/2/type = "method"
+tracks/2/path = NodePath("..")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/keys = {
+"times": PoolRealArray( 1 ),
+"transitions": PoolRealArray( 1 ),
+"values": [ {
+"args": [  ],
+"method": "change_scene"
+} ]
+}
+
+[sub_resource type="Animation" id=4]
+resource_name = "Out"
+tracks/0/type = "value"
+tracks/0/path = NodePath("ColorRect:material:shader_param/progress")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 1 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 0,
+"values": [ 0.0, 1.0 ]
+}
+tracks/1/type = "value"
+tracks/1/path = NodePath("ColorRect:material:shader_param/transition_in")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 1,
+"values": [ false ]
+}
+
+[node name="LevelTransition" type="Node2D"]
+script = ExtResource( 1 )
+__meta__ = {
+"_edit_group_": true
+}
+
+[node name="Area2D" type="Area2D" parent="."]
+collision_layer = 32
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
+shape = SubResource( 1 )
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+layer = 10
+
+[node name="ColorRect" type="ColorRect" parent="CanvasLayer"]
+material = SubResource( 2 )
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+color = Color( 0.278431, 0.176471, 0.235294, 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="CanvasLayer"]
+anims/In = SubResource( 3 )
+anims/Out = SubResource( 4 )
+
+[connection signal="body_entered" from="Area2D" to="." method="_on_Area2D_body_entered"]

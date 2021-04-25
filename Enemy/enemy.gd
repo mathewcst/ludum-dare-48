@@ -8,6 +8,9 @@ onready var edge_cast = $EdgeCast
 onready var wall_cast = $WallCast
 
 onready var sprite = $AnimatedSprite
+onready var hit_animation = $HitAnimation
+onready var hit_timer = $HitTimer
+onready var label = $Label
 
 
 # ---- INSTANCE VARS
@@ -37,6 +40,7 @@ func _ready() -> void:
 
 func _physics_process(delta: float) -> void:
 	input_vector.x = direction
+	label.text = str(health)
 	
 	if health <= 0:
 		die()
@@ -124,6 +128,8 @@ func change_direction(new_direction: int = 0) -> void:
 
 func take_damage(amount: int) -> void:
 	health -= amount
+	hit_animation.play("Start")
+	hit_timer.start()
 
 
 func die() -> void:
@@ -158,3 +164,7 @@ func _on_LineOfSight_body_entered(body: Node) -> void:
 
 func _on_LineOfSight_body_exited(body: Node) -> void:
 	stop_chasing()
+
+
+func _on_HitTimer_timeout() -> void:
+	hit_animation.play("Stop")
