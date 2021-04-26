@@ -1,0 +1,175 @@
+[gd_scene load_steps=20 format=2]
+
+[ext_resource path="res://Levels/level_1.gd" type="Script" id=1]
+[ext_resource path="res://Tiles/dirt/tileset_dirt.tres" type="TileSet" id=2]
+[ext_resource path="res://Background/Forest/Background_4.png" type="Texture" id=3]
+[ext_resource path="res://Background/Forest/Background_5.png" type="Texture" id=4]
+[ext_resource path="res://Background/Forest/Background_2.png" type="Texture" id=5]
+[ext_resource path="res://Background/Forest/Background_6.png" type="Texture" id=6]
+[ext_resource path="res://Background/Forest/Background_3.png" type="Texture" id=7]
+[ext_resource path="res://Background/Forest/Background_1.png" type="Texture" id=8]
+[ext_resource path="res://Enemy/Enemy.tscn" type="PackedScene" id=9]
+[ext_resource path="res://Background/godray.tscn" type="PackedScene" id=11]
+[ext_resource path="res://UI/Buttons/PlayBtnDown.png" type="Texture" id=12]
+[ext_resource path="res://UI/Buttons/PlayBtn.png" type="Texture" id=13]
+[ext_resource path="res://UI/Buttons/MuteBtn.png" type="Texture" id=14]
+[ext_resource path="res://UI/Buttons/MuteBtnDown.png" type="Texture" id=15]
+[ext_resource path="res://UI/Buttons/FullscreenBtn.png" type="Texture" id=16]
+[ext_resource path="res://UI/Buttons/FullscreenBtnDown.png" type="Texture" id=17]
+[ext_resource path="res://UI/Buttons/QuitBtnDown.png" type="Texture" id=18]
+[ext_resource path="res://UI/Buttons/QuitBtn.png" type="Texture" id=19]
+[ext_resource path="res://Player/player.tscn" type="PackedScene" id=20]
+
+[node name="World" type="Node2D"]
+script = ExtResource( 1 )
+
+[node name="ParallaxBackground" type="ParallaxBackground" parent="."]
+
+[node name="BG" type="ParallaxLayer" parent="ParallaxBackground"]
+position = Vector2( 0.420441, -109.737 )
+motion_mirroring = Vector2( 320, 180 )
+
+[node name="Sprite" type="Sprite" parent="ParallaxBackground/BG"]
+scale = Vector2( 320, 180 )
+texture = ExtResource( 6 )
+centered = false
+
+[node name="MOUNTAINS" type="ParallaxLayer" parent="ParallaxBackground"]
+position = Vector2( 0.420441, -109.737 )
+motion_scale = Vector2( 0.1, 0 )
+motion_mirroring = Vector2( 320, 0 )
+
+[node name="Sprite" type="Sprite" parent="ParallaxBackground/MOUNTAINS"]
+texture = ExtResource( 4 )
+centered = false
+
+[node name="CLOUDS" type="ParallaxLayer" parent="ParallaxBackground"]
+position = Vector2( 0.420441, -109.737 )
+motion_scale = Vector2( 0.15, 0 )
+motion_mirroring = Vector2( 320, 0 )
+
+[node name="Sprite" type="Sprite" parent="ParallaxBackground/CLOUDS"]
+texture = ExtResource( 3 )
+centered = false
+
+[node name="THIRD" type="ParallaxLayer" parent="ParallaxBackground"]
+position = Vector2( 0.420441, -109.737 )
+motion_scale = Vector2( 0.35, 0 )
+motion_mirroring = Vector2( 320, 0 )
+
+[node name="Sprite" type="Sprite" parent="ParallaxBackground/THIRD"]
+texture = ExtResource( 7 )
+centered = false
+
+[node name="SECOND" type="ParallaxLayer" parent="ParallaxBackground"]
+position = Vector2( 0.420441, -109.737 )
+motion_scale = Vector2( 0.45, 0 )
+motion_mirroring = Vector2( 320, 0 )
+
+[node name="Sprite" type="Sprite" parent="ParallaxBackground/SECOND"]
+texture = ExtResource( 5 )
+centered = false
+
+[node name="NEAREST" type="ParallaxLayer" parent="ParallaxBackground"]
+position = Vector2( 0.420441, -109.737 )
+motion_scale = Vector2( 0.6, 0 )
+motion_mirroring = Vector2( 320, 180 )
+
+[node name="Sprite" type="Sprite" parent="ParallaxBackground/NEAREST"]
+texture = ExtResource( 8 )
+centered = false
+
+[node name="Godray" parent="." instance=ExtResource( 11 )]
+position = Vector2( -2.98695, 103.01 )
+
+[node name="TileMap" type="TileMap" parent="."]
+tile_set = ExtResource( 2 )
+cell_size = Vector2( 16, 16 )
+collision_layer = 2
+format = 1
+tile_data = PoolIntArray( 20, 0, 0, 21, 0, 2, 65556, 0, 131072, 65557, 0, 9, 65558, 0, 2, 131093, 0, 65536, 131094, 0, 131077, 131095, 0, 2, 196629, 0, 65536, 196630, 0, 65537, 196631, 0, 65538, 262165, 0, 131072, 262166, 0, 65542, 262167, 0, 65538, 393214, 0, 196608, 393215, 0, 196609, 327680, 0, 196609, 327681, 0, 196610, 327702, 0, 65540, 327703, 0, 131074, 393238, 0, 65539, 524286, 0, 0, 524287, 0, 1, 458752, 0, 2, 458774, 0, 65539, 589822, 0, 65536, 589823, 0, 65537, 524288, 0, 131077, 524289, 0, 1, 524290, 0, 2, 524301, 0, 0, 524302, 0, 1, 524303, 0, 1, 524304, 0, 2, 524310, 0, 65539, 655358, 0, 131072, 655359, 0, 131073, 589824, 0, 65542, 589825, 0, 65537, 589826, 0, 131077, 589827, 0, 2, 589836, 0, 0, 589837, 0, 131078, 589838, 0, 65537, 589839, 0, 65537, 589840, 0, 131077, 589841, 0, 2, 589845, 0, 4, 589846, 0, 196615, 655360, 0, 65536, 655361, 0, 65537, 655362, 0, 65537, 655363, 0, 131077, 655364, 0, 1, 655365, 0, 1, 655366, 0, 1, 655367, 0, 1, 655368, 0, 1, 655369, 0, 1, 655370, 0, 1, 655371, 0, 1, 655372, 0, 131078, 655373, 0, 65537, 655374, 0, 65537, 655375, 0, 65537, 655376, 0, 65537, 655377, 0, 131077, 655378, 0, 1, 655379, 0, 1, 655380, 0, 1, 655381, 0, 131079, 720896, 0, 131072, 720897, 0, 65542, 720898, 0, 65537, 720899, 0, 65537, 720900, 0, 65537, 720901, 0, 65537, 720902, 0, 65537, 720903, 0, 65537, 720904, 0, 65537, 720905, 0, 65537, 720906, 0, 65537, 720907, 0, 65537, 720908, 0, 65537, 720909, 0, 65537, 720910, 0, 65537, 720911, 0, 65537, 720912, 0, 65537, 720913, 0, 65537, 720914, 0, 65537, 720915, 0, 65537, 720916, 0, 65541, 720917, 0, 131074, 786433, 0, 131072, 786434, 0, 131073, 786435, 0, 131073, 786436, 0, 131073, 786437, 0, 131073, 786438, 0, 131073, 786439, 0, 131073, 786440, 0, 131073, 786441, 0, 131073, 786442, 0, 131073, 786443, 0, 131073, 786444, 0, 131073, 786445, 0, 131073, 786446, 0, 131073, 786447, 0, 131073, 786448, 0, 131073, 786449, 0, 131073, 786450, 0, 131073, 786451, 0, 131073, 786452, 0, 131074 )
+
+[node name="Enemy" parent="." instance=ExtResource( 9 )]
+position = Vector2( 183.489, 152 )
+
+[node name="Enemy3" parent="." instance=ExtResource( 9 )]
+position = Vector2( 314.315, 152 )
+
+[node name="AspectRatioContainer" type="AspectRatioContainer" parent="."]
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_right = 319.0
+margin_bottom = 180.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+stretch_mode = 3
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="HBoxContainer" type="HBoxContainer" parent="AspectRatioContainer"]
+margin_top = -69.5
+margin_right = 319.0
+margin_bottom = 249.5
+alignment = 1
+
+[node name="VBoxContainer" type="VBoxContainer" parent="AspectRatioContainer/HBoxContainer"]
+margin_left = 127.0
+margin_right = 191.0
+margin_bottom = 319.0
+alignment = 1
+
+[node name="PlayBtn" type="TextureButton" parent="AspectRatioContainer/HBoxContainer/VBoxContainer"]
+margin_top = 115.0
+margin_right = 64.0
+margin_bottom = 134.0
+texture_normal = ExtResource( 13 )
+texture_pressed = ExtResource( 12 )
+texture_hover = ExtResource( 12 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="MuteBtn" type="TextureButton" parent="AspectRatioContainer/HBoxContainer/VBoxContainer"]
+margin_top = 138.0
+margin_right = 64.0
+margin_bottom = 157.0
+texture_normal = ExtResource( 14 )
+texture_pressed = ExtResource( 15 )
+texture_hover = ExtResource( 15 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="FullScreenBtn" type="TextureButton" parent="AspectRatioContainer/HBoxContainer/VBoxContainer"]
+margin_top = 161.0
+margin_right = 64.0
+margin_bottom = 180.0
+texture_normal = ExtResource( 16 )
+texture_pressed = ExtResource( 17 )
+texture_hover = ExtResource( 17 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="QuitBtn" type="TextureButton" parent="AspectRatioContainer/HBoxContainer/VBoxContainer"]
+margin_top = 184.0
+margin_right = 64.0
+margin_bottom = 203.0
+texture_normal = ExtResource( 19 )
+texture_pressed = ExtResource( 18 )
+texture_hover = ExtResource( 18 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Player" parent="." instance=ExtResource( 20 )]
+position = Vector2( 10.5067, 72.0636 )
+move_speed = 0
+jump_height = 0
+can_take_damage = false
+
+[connection signal="button_down" from="AspectRatioContainer/HBoxContainer/VBoxContainer/PlayBtn" to="." method="_on_PlayBtn_button_down"]
+[connection signal="button_down" from="AspectRatioContainer/HBoxContainer/VBoxContainer/MuteBtn" to="." method="_on_MuteBtn_button_down"]
+[connection signal="button_down" from="AspectRatioContainer/HBoxContainer/VBoxContainer/FullScreenBtn" to="." method="_on_FullScreenBtn_button_down"]
+[connection signal="button_down" from="AspectRatioContainer/HBoxContainer/VBoxContainer/QuitBtn" to="." method="_on_QuitBtn_button_down"]

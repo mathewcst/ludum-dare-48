@@ -15,7 +15,11 @@ extents = Vector2( 5.64699, 4.87181 )
 texture = ExtResource( 2 )
 
 [node name="CollisionShape2D" parent="." index="1"]
+visible = false
 shape = SubResource( 1 )
+
+[node name="PlayerDettect" parent="." index="2"]
+visible = false
 
 [node name="CollisionShape2D" parent="PlayerDettect" index="0"]
 shape = SubResource( 2 )

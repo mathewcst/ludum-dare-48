@@ -10,6 +10,7 @@ export var launch_interval: float = 2.5
 func _ready() -> void:
 	$ShootInterval.wait_time = launch_interval
 	$ShootInterval.start()
+	fire()
 
 
 func fire() -> void:
@@ -17,6 +18,7 @@ func fire() -> void:
 
 
 func spawn_spear() -> void:
+	$AudioStreamPlayer2D.play()
 	var spear = projectile.instance()
 	owner.add_child(spear)
 	spear.change_direction(direction)

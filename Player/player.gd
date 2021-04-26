@@ -14,11 +14,11 @@ onready var muzzle = $Muzzle
 onready var animation_player = $AnimationPlayer
 onready var hit_animation = $HitAnimation
 onready var camera = $PlayerCamera
+onready var audio_player = $AudioStreamPlayer
 
 onready var invencible_timer = $InvencibleTimer
-
-onready var label = $Label
-
+onready var health_bar = $HBoxContainer
+onready var bullets_bar = $VBoxContainer
 
 # ---- MEMBER VARS
 const ACCELARTION = 450
@@ -29,6 +29,12 @@ const UP = Vector2(0, -1)
 var velocity = Vector2.ZERO
 var direction = 1
 var jump_amount = 2
+var double_jump_height = jump_height
+
+
+# ---- AUDIO
+var bullet_sound = load("res://Audio/Shooting.wav")
+var hurt_sound = load("res://Audio/Hit_Hurt.wav")
 
 
 # ---- STATS
@@ -42,15 +48,12 @@ var grounded_remember = 0
 var grounded_remember_timer = 0.2
 
 # ---- SHOOT
-var bullets = 10
+var bullets = 5
 var max_bullets = 10
 var shoot_pressed_remember = 0
 var shoot_pressed_remember_timer = 0.2
 
-
 func _physics_process(delta: float) -> void:
-	
-	label.text = str(health)
 	
 	remember_grounded(delta)
 	remember_jump(delta)
@@ -59,7 +62,7 @@ func _physics_process(delta: float) -> void:
 	if can_player_jump():
 		grounded_remember = 0
 		jump_pressed_remember = 0
-		velocity.y -= jump_height
+		velocity.y -= double_jump_height
 		jump_amount -= 1
 	
 	apply_gravity()
@@ -75,13 +78,19 @@ func _unhandled_input(_event: InputEvent) -> void:
 		
 	if Input.is_action_just_pressed("jump"):
 		if not is_on_floor() and jump_amount > 0:
+			
+			double_jump_height += GRAVITY + 30
+			
 			grounded_remember = 0
 			jump_pressed_remember = 0
-			velocity.y -= jump_height
+			velocity.y -= double_jump_height
 			jump_amount -= 1
 			
 	if Input.is_action_just_pressed("fire"):
 		shoot()
+		
+	if Input.is_action_just_pressed("ui_cancel"):
+		get_tree().change_scene("res://Levels/main_menu.tscn")
 	
 
 
@@ -129,6 +138,9 @@ func damage_player(amount: int = 0, hit_position: Vector2 = Vector2.ZERO) -> voi
 		die()
 	
 	if can_take_damage:
+		audio_player.stream = hurt_sound
+		audio_player.play()
+		
 		health -= amount
 		can_take_damage = false
 		
@@ -143,13 +155,16 @@ func damage_player(amount: int = 0, hit_position: Vector2 = Vector2.ZERO) -> voi
 			velocity.x += knockback
 	
 		# Move pleyer up a little bit
-		velocity.y -= knockback
+		velocity.y = -knockback
 			
 		invencible_timer.start()
 
 
 func shoot() -> void:
+	audio_player.stream = bullet_sound
+	
 	if shoot_pressed_remember < 0 and bullets > 0:
+		audio_player.play()
 		bullets -= 1
 		var bullet = projectile.instance()
 		owner.add_child(bullet)
@@ -161,7 +176,7 @@ func shoot() -> void:
 func die() -> void:
 	hit_animation.play("Stop")
 	queue_free()
-	var _reload = get_tree().reload_current_scene()
+	get_tree().change_scene("res://Levels/main_menu.tscn")
 
 
 # ---- HELPER FUNCTIONS
@@ -178,6 +193,7 @@ func remember_grounded(delta) -> void:
 	
 	if is_on_floor():
 		jump_amount = 2
+		double_jump_height = jump_height
 		grounded_remember = grounded_remember_timer
 
 func remember_jump(delta) -> void:
@@ -204,6 +220,13 @@ func animations() -> void:
 		sprite.flip_h = true
 		gun.position.x = -8
 		muzzle.position.x = -12
+		
+	
+	for child in health_bar.get_child_count():
+		health_bar.get_child(child).visible = health > child	
+	
+	for child in bullets_bar.get_child_count():
+		bullets_bar.get_child(child).visible = bullets > child
 
 
 # ---- SIGNALS

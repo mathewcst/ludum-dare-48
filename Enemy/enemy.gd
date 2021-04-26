@@ -10,13 +10,13 @@ onready var wall_cast = $WallCast
 onready var sprite = $AnimatedSprite
 onready var hit_animation = $HitAnimation
 onready var hit_timer = $HitTimer
-onready var label = $Label
+onready var audio_player = $AudioStreamPlayer2D
 
 
 # ---- INSTANCE VARS
 export var move_speed: int = 40
-export var chase_speed: int = 60
-export var health:int = 4
+export var chase_speed: int = 55
+export var health:int = 2
 
 
 # ---- MEMBER VARS
@@ -33,6 +33,9 @@ var patrolling: bool = false
 var chasing: bool = false
 var chase_body: KinematicBody2D = null
 
+# ---- AUDIO
+var hurt_sound = load("res://Audio/Enemy_Hurt.wav")
+
 
 func _ready() -> void:
 	patrol()
@@ -40,7 +43,6 @@ func _ready() -> void:
 
 func _physics_process(delta: float) -> void:
 	input_vector.x = direction
-	label.text = str(health)
 	
 	if health <= 0:
 		die()
@@ -54,12 +56,14 @@ func _physics_process(delta: float) -> void:
 		
 	elif chasing:
 		if not edge_cast.is_colliding() or wall_cast.is_colliding():
-			idle()
+			change_direction()
+			patrol()
 		
-		var chase_direction = position.direction_to(chase_body.position)
-		chase(chase_direction.x)
-		
-		velocity = velocity.move_toward(Vector2(chase_direction.x, 0) * chase_speed, ACCELERATION * delta)
+		else:
+			var chase_direction = position.direction_to(chase_body.position)
+			chase(chase_direction.x)
+			
+			velocity = velocity.move_toward(Vector2(chase_direction.x, 0) * chase_speed, ACCELERATION * delta)
 		
 		
 	else:
@@ -127,13 +131,18 @@ func change_direction(new_direction: int = 0) -> void:
 
 
 func take_damage(amount: int) -> void:
+	audio_player.play()
 	health -= amount
 	hit_animation.play("Start")
 	hit_timer.start()
+	
+	print(health)
 
 
 func die() -> void:
+	yield(audio_player, "finished")
 	queue_free()
+	
 	
 
 func chase_player(player: KinematicBody2D) -> void:
