@@ -6,3 +6,6 @@
 The source code of the game I've made in 48h for LudumDare #48
 
 [Itch.io](https://mathewcst.itch.io/beession-impossible) | [LD48 Submission](https://ldjam.com/events/ludum-dare/48/beession-impossible)
+
+Music made with Musiclab by Chrome Experiments
+[Musiclab](https://musiclab.chromeexperiments.com/Song-Maker/song/5055823768715264)
