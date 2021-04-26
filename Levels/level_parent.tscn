@@ -12,7 +12,7 @@
 [ext_resource path="res://Background/Forest/Background_5.png" type="Texture" id=10]
 
 [sub_resource type="RectangleShape2D" id=1]
-extents = Vector2( 218.378, 74.3596 )
+extents = Vector2( 232.025, 74.3596 )
 
 [sub_resource type="RectangleShape2D" id=2]
 extents = Vector2( 15.4515, 45.6815 )

@@ -6,7 +6,7 @@
 [ext_resource path="res://Systems/hitbox.tscn" type="PackedScene" id=4]
 [ext_resource path="res://Audio/Enemy_Hurt.wav" type="AudioStream" id=5]
 
-[sub_resource type="Shader" id=17]
+[sub_resource type="Shader" id=54]
 code = "shader_type canvas_item;
 
 uniform bool active = false;
@@ -24,7 +24,7 @@ void fragment(){
 }"
 
 [sub_resource type="ShaderMaterial" id=18]
-shader = SubResource( 17 )
+shader = SubResource( 54 )
 shader_param/active = false
 
 [sub_resource type="AtlasTexture" id=19]

@@ -15,13 +15,12 @@ func _ready() -> void:
 
 func play_music() -> void:
 	if is_playing:
-		music_player.stream = theme_music
+		music_player.stop()
 		music_player.play()
 
 
 func stop_all() -> void:
 	music_player.stop()
-	music_player.stream = null
 
 func toggle_mute() -> void:
 	if is_playing:

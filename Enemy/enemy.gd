@@ -135,8 +135,6 @@ func take_damage(amount: int) -> void:
 	health -= amount
 	hit_animation.play("Start")
 	hit_timer.start()
-	
-	print(health)
 
 
 func die() -> void:
